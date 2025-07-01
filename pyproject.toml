@@ -1,0 +1,6 @@
+[project]
+name="cs61b-cli"
+version="0.0.1"
+
+[project.scripts]
+gitbug = "gitbug.gitbug:main"
