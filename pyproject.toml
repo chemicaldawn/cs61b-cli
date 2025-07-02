@@ -3,4 +3,5 @@ name="cs61b-cli"
 version="0.0.1"
 
 [project.scripts]
+cs61b = "cs61b.cs61b:main"
 gitbug = "gitbug.gitbug:main"

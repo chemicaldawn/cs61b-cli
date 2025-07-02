@@ -8,8 +8,8 @@ from shutil import move, rmtree
 from re import findall
 from argparse import ArgumentParser
 
-gitbug_folder = os.path.expanduser("~/.gitbug")
-coursespec_path = os.path.expanduser("~/.gitbug/coursespec.json")
+cs61b_folder = os.path.expanduser("~/.cs61b")
+coursespec_path = os.path.expanduser("~/.cs61b/coursespec.json")
 coursespec_url = "https://raw.githubusercontent.com/chemicaldawn/cs61b-cli/refs/heads/main/resources/coursespec.json"
 
 def parse_args():
@@ -25,10 +25,6 @@ def parse_args():
     return args
 
 def check_file_structure():
-    if not os.path.exists(gitbug_folder):
-        print("Creating gitbug cache directory...")
-        os.mkdir(gitbug_folder)
-
     if not os.path.exists(coursespec_path):
         update(True)
 
@@ -40,22 +36,8 @@ def get_coursespec():
 
 def update(critical=False):
     
-    print("Updating coursespec...")
-    response = requests.get(coursespec_url)
-
-    try:
-        response.raise_for_status()
-        content = response.text
-
-        with open(coursespec_path,"w") as file:
-            file.write(content)
-            file.close()
-
-    except Exception as e:
-        print("Error downloading coursespec. Using local copy.")
-
-        if critical:
-            print("FATAL: No local copy. Please connect to the internet to automatically download the coursespec.")
+    print("Updating coursespec. Running cs61b -u")
+    run(["cs61b","-u"])
 
 def clone_down(repo_id : str, assignment_id: str, output_path: str, coursespec):
     clone_location = os.path.join(output_path, repo_id)
