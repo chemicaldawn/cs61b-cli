@@ -4,7 +4,7 @@ This repository contains various command line tools I've created to ease tasks o
 
 ## Installation instructions
 
-1. Install `pipx` using the instructions listed here
+1. Install `pipx` using the instructions listed [here](https://github.com/pypa/pipx)
 2. Clone this repository and `cd` in
 3. Run `./install.sh` (you may need to run `chmod +x install.sh` if you recieve a 'command not found' response)
 4. You're done! On Windows, you may need to restart your machine.
