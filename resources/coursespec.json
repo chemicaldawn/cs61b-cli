@@ -1,3 +1,4 @@
 {
-    "test": "test"
+    "student-repo-ssh": "git@github.com:Berkeley-CS61B-Student/%.git",
+    "course-repo-ssh": "git@github.com:cs61bl/course-materials-su25.git"
 }
