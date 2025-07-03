@@ -75,17 +75,27 @@ def clone_down(repo_id : str, assignment_id: str, output_path: str, coursespec):
 
     student_tests_stub = f"{assignment_id}/tests_student"
     for file in os.listdir(os.path.join(f"{assignment_id}/tests_student")):
+        filename = file.split(".")[0]
+        print(filename)
         old_location = os.path.join(student_tests_stub, file)
         new_location = os.path.join(f"{assignment_id}/tests", f"Student{file}")
+
+        content = ""
+        with open(old_location, "r+") as f:
+            content = f.read()
+            content = content.replace(filename,f"Student{filename}")
+            f.close()
 
         if (os.path.exists(new_location)):
             os.remove(new_location)
 
-        copy(old_location, new_location)
+        with open(new_location, "w") as f:
+            f.write(content)
+            f.close()
 
     print("Cleaning up...")
     rmtree(student_tests_stub)
-    autoimport_libraries(assignment_id)
+    #autoimport_libraries(assignment_id)
     print("Success! Happy debugging :)")
 
 def autoimport_libraries(project_folder : str):
