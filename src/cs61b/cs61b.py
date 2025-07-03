@@ -27,10 +27,15 @@ def soft_update():
         print("Creating cache folder...")
         os.mkdir(cs61b_folder)
 
+    os.chdir(cs61b_folder)
+
     if not os.path.exists(cs61b_local_repo):
         print("Cloning source...")
-        os.chdir(cs61b_folder)
         run(["git","clone",cs61b_remote_repo,"primary"])
+    else:
+        os.chdir(cs61b_local_repo)
+        run(["git","pull","origin","main"])
+        os.chdir("..")
 
     coursespec_file = open(coursespec_path,"r")
     coursespec = json.loads(coursespec_file.read())
@@ -39,6 +44,12 @@ def soft_update():
         print("Cloning course materials...")
         os.chdir(cs61b_folder)
         run(["git","clone",coursespec["course-repo-ssh"],"materials"])
+    else:
+        os.chdir(course_materials_local_repo)
+        run(["git","pull","origin","main"])
+        os.chdir("..")
+
+    print("Soft update finished!")
 
 
 def hard_update():
