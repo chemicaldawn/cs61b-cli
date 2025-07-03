@@ -7,6 +7,7 @@ cs61b_remote_repo = "git@github.com:chemicaldawn/cs61b-cli.git"
 cs61b_folder = os.path.expanduser("~/.cs61b")
 cs61b_local_repo = os.path.expanduser("~/.cs61b/primary")
 course_materials_local_repo = os.path.expanduser("~/.cs61b/materials")
+libraries_local_repo = os.path.expanduser("~/.cs61b/libraries")
 coursespec_path = os.path.expanduser("~/.cs61b/primary/resources/coursespec.json")
 
 def parse_args():
@@ -48,6 +49,16 @@ def soft_update():
         os.chdir(course_materials_local_repo)
         run(["git","pull","origin","main"])
         os.chdir("..")
+
+    if not os.path.exists(libraries_local_repo):
+        print("Cloning course materials...")
+        os.chdir(cs61b_folder)
+        run(["git","clone",coursespec["library-repo-ssh"],"libraries"])
+    else:
+        os.chdir(libraries_local_repo)
+        run(["git","pull","origin","main"])
+        os.chdir("..")
+
 
     print("Soft update finished!")
 

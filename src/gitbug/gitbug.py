@@ -10,6 +10,7 @@ from argparse import ArgumentParser
 
 cs61b_folder = os.path.expanduser("~/.cs61b")
 materials_folder = os.path.expanduser("~/.cs61b/materials")
+libraries_folder = os.path.expanduser("~/.cs61b/libraries")
 coursespec_path = os.path.expanduser("~/.cs61b/primary/resources/coursespec.json")
 
 def parse_args():
@@ -84,7 +85,29 @@ def clone_down(repo_id : str, assignment_id: str, output_path: str, coursespec):
 
     print("Cleaning up...")
     rmtree(student_tests_stub)
+    autoimport_libraries(assignment_id)
     print("Success! Happy debugging :)")
+
+def autoimport_libraries(project_folder : str):
+    os.mkdir(os.path.join(project_folder,".idea"))
+    idea_libs_folder = os.path.join(project_folder,".idea","libraries")
+    os.mkdir(idea_libs_folder)
+    library_file_content = f"""<component name="libraryTable">
+    <library name="libraries">
+        <CLASSES>
+            <root url="file://{libraries_folder}"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+            <root url="file://{libraries_folder}"/>
+        </SOURCES>
+        <jarDirectory url="file://{libraries_folder}" recursive="false"/>
+        <jarDirectory url="file://{libraries_folder}" recursive="false" type="SOURCES"/>
+    </library>
+</component>"""
+    with open(os.path.join(idea_libs_folder,"libraries.xml"), "w") as file:
+        file.write(library_file_content)
+        file.close()
 
 def main():
     args = vars(parse_args())
