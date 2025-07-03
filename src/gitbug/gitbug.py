@@ -4,13 +4,13 @@ import json
 import requests
 import hashlib
 from subprocess import run
-from shutil import move, rmtree
+from shutil import copy, copytree, move, rmtree
 from re import findall
 from argparse import ArgumentParser
 
 cs61b_folder = os.path.expanduser("~/.cs61b")
-coursespec_path = os.path.expanduser("~/.cs61b/coursespec.json")
-coursespec_url = "https://raw.githubusercontent.com/chemicaldawn/cs61b-cli/refs/heads/main/resources/coursespec.json"
+materials_folder = os.path.expanduser("~/.cs61b/materials")
+coursespec_path = os.path.expanduser("~/.cs61b/primary/resources/coursespec.json")
 
 def parse_args():
     parser : ArgumentParser = ArgumentParser(
@@ -70,27 +70,20 @@ def clone_down(repo_id : str, assignment_id: str, output_path: str, coursespec):
     containing_folder = findall(r"([a-z]+)[0-9]", assignment_id)[0]
     tests_location = f"{containing_folder}/{assignment_id}/grader/submit/"
 
-    run(["git","clone","--no-checkout",course_repo_ssh,".materials"])
-    os.chdir(".materials")
+    copytree(os.path.join(materials_folder,tests_location), f"{assignment_id}/tests")
 
-    run(["git","sparse-checkout","init"])
-    run(["git","sparse-checkout","set",f"{tests_location}/"])
+    student_tests_stub = f"{assignment_id}/tests_student"
+    for file in os.listdir(os.path.join(f"{assignment_id}/tests_student")):
+        old_location = os.path.join(student_tests_stub, file)
+        new_location = os.path.join(f"{assignment_id}/tests", f"Student{file}")
 
-    run(["git","checkout","main"])
-    os.chdir("..")
+        if (os.path.exists(new_location)):
+            os.remove(new_location)
 
-    move(os.path.join(".materials",tests_location), f"{assignment_id}/tests_grader")
+        copy(old_location, new_location)
 
-    # cleanup
     print("Cleaning up...")
-    for root, dirs, files in os.walk(".materials", topdown=False):
-        for name in files:
-            filename = os.path.join(root, name)
-            os.chmod(filename, stat.S_IWRITE)
-            os.remove(filename)
-        for name in dirs:
-            os.rmdir(os.path.join(root, name))
-    os.rmdir(".materials")
+    rmtree(student_tests_stub)
     print("Success! Happy debugging :)")
 
 def main():
@@ -103,4 +96,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

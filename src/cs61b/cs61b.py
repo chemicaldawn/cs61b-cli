@@ -1,13 +1,13 @@
 import os
 import json
-from subprocess import run
+from subprocess import run, Popen, PIPE
 from argparse import ArgumentParser
 
 cs61b_remote_repo = "git@github.com:chemicaldawn/cs61b-cli.git"
 cs61b_folder = os.path.expanduser("~/.cs61b")
-cs61b_local_repo = os.path.expanduser("~/.cs61b/src")
+cs61b_local_repo = os.path.expanduser("~/.cs61b/primary")
 course_materials_local_repo = os.path.expanduser("~/.cs61b/materials")
-coursespec_path = os.path.expanduser("~/.cs61b/src/resources/coursespec.json")
+coursespec_path = os.path.expanduser("~/.cs61b/primary/resources/coursespec.json")
 
 def parse_args():
     parser : ArgumentParser = ArgumentParser(
@@ -30,7 +30,7 @@ def soft_update():
     if not os.path.exists(cs61b_local_repo):
         print("Cloning source...")
         os.chdir(cs61b_folder)
-        run(["git","clone",cs61b_remote_repo,"src"])
+        run(["git","clone",cs61b_remote_repo,"primary"])
 
     coursespec_file = open(coursespec_path,"r")
     coursespec = json.loads(coursespec_file.read())
@@ -43,10 +43,7 @@ def soft_update():
 
 def hard_update():
     print("Performing hard update. Soft-updating first.")
-    soft_update()
-    os.chdir("src")
-    run("./install.sh")
-    
+    soft_update()  
 
 def main():
     args = vars(parse_args())
